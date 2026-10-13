@@ -368,7 +368,7 @@ function parse(text){
 const EMOJI = /\p{Extended_Pictographic}/gu;
 function analyze(msgs){
   const P = {};
-  const get = n => P[n] || (P[n] = { name:n, count:0, chars:0, longest:0, longestText:'', kk:0, cry:0, emoji:0, photo:0, emoticon:0, q:0, bang:0, link:0, hours:new Array(24).fill(0), weekend:0, starts:0, replies:[], maxStreak:0, deleted:0, short:0, heart:0, sorry:0, food:0, money:0, lol:0, laughsGot:0, hits:0, advice:0, adviceN:0, slang:0, log:[], days:new Set() });
+  const get = n => P[n] || (P[n] = { name:n, count:0, chars:0, longest:0, longestText:'', kk:0, cry:0, emoji:0, photo:0, emoticon:0, q:0, bang:0, link:0, hours:new Array(24).fill(0), weekend:0, starts:0, replies:[], maxStreak:0, deleted:0, short:0, heart:0, sorry:0, food:0, money:0, lol:0, laughsGot:0, hits:0, advice:0, adviceN:0, counseled:0, slang:0, log:[], days:new Set() });
   let prev = null, lastSub = null, streak = 0, streakName = null;
   msgs.forEach((m, i) => {
     const p = get(m.name), txt = m.text, h = m.t.getHours(), d = m.t.getDay();
@@ -384,6 +384,10 @@ function analyze(msgs){
     }
     rec.sl = (txt.match(/ㄹㅇ|ㅇㅈ|개꿀|개웃|개좋|개맛|존맛|존잼|쩐다|쩔|미쳤|레전드|킹받|지리|지린|갓생|찐|극혐|노잼|꿀잼|핵|에바|어쩔|저쩔|인정|띵|손절|각이|ㅋㅋ루|ㅅㄱ|ㅈㄱㄴ|ㅈㅈ|개빡|빡침|ㅠㅠㅠㅠ|ㅋㅋㅋㅋㅋㅋㅋㅋ|🤣|💀|🫠|ㅗ|ㅅㅂ|ㅈㄴ|응애|ㅌㅌ|ㅈㅅ|머임|모임|엥|헐|대박|오지|알빠|억까|ㄷㄷ|ㅁㅊ|ㅇㅂ|ㅊㅋ/g)||[]).length;
     p.advice += rec.adv; if (rec.adv) p.adviceN++; p.slang += rec.sl;
+    if (rec.adv && target){ // 조언을 받은 쪽 = 무료 상담 받은 사람
+      const c = get(target.name); c.counseled++;
+      const tr = target.rec; if (tr && (!tr.advBy || rec.adv > tr.advBy.k)) tr.advBy = { n:m.name, t:txt, k:rec.adv };
+    }
     p.hours[h]++; if (d === 0 || d === 6) p.weekend++;
     const isPhoto = /^(사진|사진 \d+장|동영상)$/.test(txt.trim());
     const isEmot = /^이모티콘$/.test(txt.trim());
@@ -470,17 +474,17 @@ const AWARDS = [
   { id:'kk', emoji:'🤣', name:'너그러운 관객 깔깔이', desc:'뭐라고 하든 ㅋㅋㅋㅋ로 받아주는 사람', key:p=>p.kk, unit:p=>`ㅋ·ㅎ ${fmtN(p.kk)}개`,
     quip:'안 웃긴 것도 ㅋㅋㅋㅋ, 월요일도 ㅋㅋㅋㅋ. 개그맨들의 유일한 희망.',
     ex:p=>uniq([...p.log].filter(r=>isText(r)&&kk(r.text)>=3).sort((x,y)=>(y.q?1:0)-(x.q?1:0)||kk(y.text)-kk(x.text))).slice(0,3).map((r,i)=>({ c:r.q?['이게 웃긴가? 이 사람한텐 웃김','웃음 포인트 미상','그냥 다 웃김'][i]:['그냥 혼자 웃음','근거 없는 ㅋ','ㅋ 자가 생산'][i], q:r.q?clip(r.q.t,50):undefined, qn:r.q?r.q.n:undefined, a:clip(r.text,50) })) },
-  { id:'doc', emoji:'🩺', name:'당신의 마음을 치료해준 오은영 상', desc:'남의 고민에 "그럴 땐 이렇게 해봐"로 답한 사람', key:p=>p.advice + p.adviceN, unit:p=>`조언 ${fmtN(p.adviceN)}번 (처방 표현 ${fmtN(p.advice)}회)`,
-    quip:'상담비는 안 받음. 대신 안 물어본 것까지 처방해 줌.',
-    ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.adv>0&&r.q).sort((x,y)=>y.adv-x.adv||y.text.length-x.text.length)).slice(0,3).map((r,i)=>({ c:['내담자 입장','전문의 소견','진료 끝, 다음 환자'][i], q:clip(r.q.t,60), qn:r.q.n, a:clip(r.text,90) })) },
+  { id:'doc', emoji:'🛋️', name:'오은영을 찾습니다 상', desc:'고민 올리면 온 방이 달려와 상담해 주는, 이 방의 공식 내담자', key:p=>p.counseled, unit:p=>`무료 상담 ${fmtN(p.counseled)}회`,
+    quip:'상담비 0원. 이 방이 곧 이 사람의 정신과.',
+    ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.advBy).sort((x,y)=>y.advBy.k-x.advBy.k||y.text.length-x.text.length)).slice(0,3).map((r,i)=>({ c:['증상 호소','무료 상담 진행 중','다음 예약 잡힘'][i], a:clip(r.text,70), re:clip(r.advBy.t,70), rn:r.advBy.n })) },
   { id:'kid', emoji:'🧒', name:'이구역 잼민이', desc:'ㄹㅇ ㅇㅈ 킹받네 — 신조어 사용량 1위', key:p=>p.slang, unit:p=>`신조어·급식체 ${fmtN(p.slang)}회`,
     quip:'주민등록상 나이와 카톡상 나이의 차이가 가장 큰 사람.',
     ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.sl>0).sort((x,y)=>y.sl-x.sl)).slice(0,3).map((r,i)=>({ c:['한 문장에 신조어 '+r.sl+'개','번역기 필요','부모님께 보여드릴 수 없음'][i], a:clip(r.text,60) })) },
-  { id:'quiet', emoji:'🤫', name:'조용했던 우리 아이', desc:'분명 방에 있는데, 말은 거의 없는 사람', key:p=>-p.count, unit:p=>`메시지 겨우 ${fmtN(p.count)}개`, needAll:true,
+  { id:'quiet', emoji:'🤫', name:'유난히 내성적인 우리 아이', desc:'분명 방에 있는데, 말은 거의 없는 사람', key:p=>-p.count, unit:p=>`메시지 겨우 ${fmtN(p.count)}개`, needAll:true,
     quip:'"1"은 항상 사라지는데 말은 없음. 다 보고 있음. 가장 무서운 유형.',
     ex:p=>pick(p.log.filter(r=>isText(r)&&r.text.trim().length>=2), 3).map((r,i)=>({ c:['역사적 발언 1호','오랜 침묵 끝에','이 말 하고 다시 잠수'][i]+` (${when(r)})`, a:clip(r.text,60) })) },
 ];
-const CLASSES = { talk:'중계진', short:'미니멀리스트', comic:'개그맨', night:'야행성', kk:'관객', doc:'상담 선생님', kid:'잼민이', quiet:'관찰자' };
+const CLASSES = { talk:'중계진', short:'미니멀리스트', comic:'개그맨', night:'야행성', kk:'관객', doc:'내담자', kid:'잼민이', quiet:'관찰자' };
 
 function judge(P){
   const people = Object.values(P);
@@ -560,7 +564,7 @@ const ART = {
   kk: ()=>potato({face:F.dead, tilt:-12, prop:[...Array(14)].map((_,i)=>t(20+(i*37)%220, 20+(i*53)%160,'ㅋ',14+(i*7)%18,'#b36b00',(i*41)%60-30)).join('')}),
   night: ()=>potato({face:F.sleepy, body:'#c9b9ff', bg:`<rect width="240" height="180" fill="#1b1540"/><circle cx="200" cy="34" r="20" fill="#fee500"/><circle cx="190" cy="28" r="18" fill="#1b1540"/>`+[...Array(12)].map((_,i)=>`<circle cx="${(i*67)%240}" cy="${(i*41)%80}" r="1.8" fill="#fff"/>`).join(''), prop:t(50,160,'03:17',22,'#fff')+bubble(180,130,'자?',40)}),
   comic: ()=>potato({face:F.smug, body:'#ffd98a', prop:`<rect x="24" y="40" width="10" height="70" rx="4" fill="#333"/><ellipse cx="29" cy="36" rx="12" ry="14" fill="#555" stroke="${INK}" stroke-width="3"/>`+bubble(190,30,'ㅋㅋㅋㅋ',70)+bubble(200,70,'ㅋㅋㅋㅋㅋ',80)+bubble(190,110,'ㅋㅋ',44)+bubble(195,150,'미친ㅋㅋ',66)+t(50,165,'(진지했음)',11)}),
-  doc: ()=>potato({face:F.think, body:'#d8f5e3', prop:`<circle cx="104" cy="92" r="13" fill="none" stroke="${INK}" stroke-width="3"/><circle cx="138" cy="92" r="13" fill="none" stroke="${INK}" stroke-width="3"/><path d="M117 92 h8" stroke="${INK}" stroke-width="3"/><rect x="18" y="110" width="60" height="50" rx="6" fill="#fff" stroke="${INK}" stroke-width="3"/>`+t(48,130,'처방전',12)+t(48,150,'일단 자라',11)+bubble(190,36,'그럴 땐',56)+bubble(196,68,'이렇게 해봐',84)+bubble(60,40,'힘들어ㅠ',60)}),
+  doc: ()=>potato({face:F.cry, body:'#d8f5e3', tilt:70, prop:`<rect x="30" y="118" width="180" height="40" rx="12" fill="#b58b5a" stroke="${INK}" stroke-width="3"/><rect x="24" y="100" width="40" height="40" rx="10" fill="#c99a68" stroke="${INK}" stroke-width="3"/>`+bubble(60,40,'힘들어ㅠ',64)+bubble(190,30,'그럴 땐',56)+bubble(196,62,'일단 자라',70)+t(200,165,'상담비 ₩0',12)}),
   kid: ()=>potato({face:F.smug, body:'#b8f0ff', tilt:-8, prop:`<path d="M80 40 q40 -40 80 0" fill="#ff4d3d" stroke="${INK}" stroke-width="3"/><path d="M160 40 l40 -6 l-4 10z" fill="#ff4d3d" stroke="${INK}" stroke-width="3"/>`+bubble(40,80,'ㄹㅇ',40)+bubble(200,100,'ㅇㅈ',40)+bubble(50,150,'킹받네',56)+bubble(195,150,'개꿀ㅋ',56)+t(120,20,'급식체 능력자',12)}),
   quiet: ()=>potato({face:F.blank, body:'#d8d8d8', bg:`<rect width="240" height="180" fill="#2a2f3a"/>`+[...Array(5)].map((_,i)=>bubble(40+(i*47)%170, 24+(i*31)%60, 'ㅋㅋ', 40)).join(''), prop:`<path d="M112 118 q8 6 16 0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="118" y="96" width="8" height="30" rx="4" fill="#ffd98a" stroke="${INK}" stroke-width="3"/>`+t(120,160,'(읽음)',14,'#fff')+t(200,160,'1 ✓',12,'#aaa')}),
   mvp: ()=>potato({face:F.smug, body:'#fee500', prop:`<path d="M80 50 l12 -34 l16 20 l12 -28 l12 28 l16 -20 l12 34z" fill="#ffb700" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`+[...Array(8)].map((_,i)=>t(20+(i*63)%210, 30+(i*51)%150,'★',16,'#ff4d3d')).join('')}),
