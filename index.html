@@ -748,10 +748,35 @@ async function decodeShow(input){
   if (!obj.awards.length) throw new Error('noawards');
   return obj;
 }
+// 링크 단축: spoo.me(키 불필요·CORS 허용)로 줄임. 어떤 이유로든 실패하면 원본 링크를 그대로 돌려줘 공유가 끊기지 않게.
+const shortCache = new Map();
+async function shorten(longUrl){
+  if (shortCache.has(longUrl)) return shortCache.get(longUrl);
+  try {
+    const ctl = new AbortController();
+    const timer = setTimeout(()=>ctl.abort(), 3500);
+    const res = await fetch('https://spoo.me/', {
+      method: 'POST',
+      headers: { 'Accept': 'application/json' },
+      body: new URLSearchParams({ url: longUrl }),
+      signal: ctl.signal,
+    });
+    clearTimeout(timer);
+    if (!res.ok) throw new Error('http ' + res.status);
+    const short = (await res.json()).short_url?.replace(/^http:/, 'https:');
+    if (!short) throw new Error('noshort');
+    shortCache.set(longUrl, short);
+    return short;
+  } catch (e) {
+    console.warn('링크 단축 실패, 원본 링크 사용', e);
+    return longUrl;
+  }
+}
 async function makeShareLink(startAt){
   const code = await encodeShow(SHOW);
   const base = PUBLIC_URL || location.href.split('#')[0];
-  return { link: base + '#r=' + code + (startAt ? '&a=' + startAt : ''), code };
+  const link = base + '#r=' + code + (startAt ? '&a=' + startAt : '');
+  return { link: await shorten(link), code };
 }
 async function shareLink(startAt, okMsg){
   try {
