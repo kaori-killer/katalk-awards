@@ -25,16 +25,17 @@
   --text:#f6efe6;
   --sub:#c9b9ad;
   --sans:"Noto Sans KR",system-ui,-apple-system,"Apple SD Gothic Neo","Malgun Gothic",sans-serif;
-  --disp:"Black Han Sans","Noto Sans KR",system-ui,sans-serif;
+  --disp:"Black Han Sans","Noto Sans KR","Apple SD Gothic Neo","Malgun Gothic",system-ui,sans-serif;
 }
 html{scroll-padding-top:env(safe-area-inset-top,0px)}
 *,*::before,*::after{box-sizing:inherit}
-html,body{margin:0;min-height:100%}
-body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased}
+html,body{margin:0;min-height:100%;overflow-x:hidden;-webkit-text-size-adjust:100%;text-size-adjust:100%}
+body{background:var(--bg);color:var(--text);font-family:var(--sans);line-height:1.55;-webkit-font-smoothing:antialiased;word-break:keep-all;overflow-wrap:anywhere}
 button{font-family:inherit;cursor:pointer}
 button:focus-visible,textarea:focus-visible,label:focus-within{outline:3px solid var(--yellow);outline-offset:3px}
-.wrap{max-width:720px;margin:0 auto;padding:28px 20px 60px}
+.wrap{max-width:720px;margin:0 auto;padding:28px 20px 60px;min-width:0}
 h1,h2,h3{font-family:var(--disp);font-weight:400;letter-spacing:.01em;margin:0}
+.marquee,.card .award,.card .winner,.mvp .name,.person .name,.hall h2,.drum,.summary div b,.top b,.ribbon{font-synthesis:none}
 .screen{display:none}
 .screen.on{display:block}
 
@@ -90,7 +91,8 @@ textarea::placeholder{color:#6f615a}
 
 /* ---------- 시상 ---------- */
 .top{display:flex;justify-content:space-between;align-items:center;color:var(--sub);font-size:14px;margin-bottom:14px}
-.top b{color:var(--yellow);font-family:var(--disp);font-weight:400;font-size:18px}
+.top>span:first-of-type{min-width:0;flex:1;display:flex;gap:6px;align-items:center}
+.top b{color:var(--yellow);font-family:var(--disp);font-weight:400;font-size:18px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}
 .progress{height:6px;background:var(--line);border-radius:3px;overflow:hidden;margin-bottom:26px}
 .progress i{display:block;height:100%;background:var(--yellow);width:0;transition:width .4s}
 
@@ -98,13 +100,16 @@ textarea::placeholder{color:#6f615a}
 .card{background:var(--paper);color:var(--ink);border-radius:22px;padding:34px 24px 30px;min-height:380px;display:flex;flex-direction:column;justify-content:center;align-items:center;box-shadow:0 20px 50px rgba(0,0,0,.45),0 0 0 6px var(--yellow) inset;transform-style:preserve-3d;transition:transform .5s;position:relative}
 .card.closed{cursor:pointer}
 .card .emoji{font-size:72px;line-height:1;filter:drop-shadow(0 6px 0 rgba(0,0,0,.08))}
-.card .award{font-family:var(--disp);font-size:clamp(34px,8vw,52px);margin-top:10px;line-height:1.05}
+.card .award{font-family:var(--disp);font-size:clamp(34px,8vw,52px);margin-top:10px;line-height:1.1;max-width:100%}
+.card .award.long{font-size:clamp(24px,6.5vw,38px)}
 .card .desc{color:#6d5a4e;font-size:15px;margin-top:8px;max-width:34ch}
 .card .tap{margin-top:30px;background:var(--ink);color:var(--yellow);padding:10px 20px;border-radius:999px;font-weight:700;font-size:15px;animation:pulse 1.2s infinite}
 @keyframes pulse{50%{transform:scale(1.06)}}
 .card .nominee{margin-top:24px;font-size:18px;color:#6d5a4e}
-.card .winner{font-family:var(--disp);font-size:clamp(40px,10vw,64px);line-height:1;margin-top:6px;color:var(--red);text-shadow:4px 4px 0 var(--yellow)}
+.card .winner{font-family:var(--disp);font-size:clamp(40px,10vw,64px);line-height:1.1;margin-top:6px;color:var(--red);text-shadow:4px 4px 0 var(--yellow);max-width:100%}
+.card .winner.long{font-size:clamp(26px,7vw,44px);text-shadow:3px 3px 0 var(--yellow)}
 .card .stat{margin-top:14px;font-size:16px;font-weight:700}
+.card .ceded{margin-top:8px;font-size:12.5px;color:#b36b00;background:#fff3c4;border-radius:999px;padding:4px 12px}
 .card .quip{margin-top:10px;color:#6d5a4e;font-size:15px;max-width:38ch}
 .card .ex{margin-top:18px;width:100%;max-width:360px;text-align:left}
 .card .exh{font-size:12px;color:#9c8f85;text-align:center;margin-bottom:8px}
@@ -113,12 +118,13 @@ textarea::placeholder{color:#6f615a}
 .card .exq{align-self:flex-start;background:#fff;color:var(--ink);border:1.5px solid #e4d7b4;border-radius:14px 14px 14px 3px;padding:7px 11px;font-size:13.5px;line-height:1.4;margin:2px 0;max-width:88%;word-break:break-all}
 .card .exq small{display:block;font-size:11px;color:#9c8f85;margin-bottom:1px}
 .card .exq.re{margin-top:3px}
-.card .exb{align-self:flex-end;border-radius:14px 14px 3px 14px!important;max-width:88%}
+.card .exb{align-self:flex-end;border-radius:14px 14px 3px 14px!important;max-width:88%;text-align:left}
 .card .exb{display:inline-block;background:var(--yellow);color:var(--ink);border-radius:14px 14px 14px 3px;padding:8px 12px;font-size:14px;line-height:1.4;margin:3px 0;max-width:100%;word-break:break-all;box-shadow:0 2px 0 var(--yellow-deep)}
 .card .exb::before{content:"";}
+.card>*{max-width:100%}
 .card .runners{margin-top:22px;width:100%;max-width:360px;border-top:1px dashed #d9c9a3;padding-top:12px;font-size:13.5px;color:#7b6a5e}
-.card .runners span{display:flex;justify-content:space-between;padding:2px 0}
-.ribbon{position:absolute;top:-14px;left:50%;transform:translateX(-50%) rotate(-3deg);background:var(--red);color:#fff;font-family:var(--disp);padding:6px 18px 4px;font-size:16px;border-radius:6px;box-shadow:0 3px 0 #b8271b}
+.card .runners span{display:flex;justify-content:space-between;padding:2px 0;font-weight:700;color:#6d5a4e}
+.ribbon{display:inline-block;max-width:100%;transform:rotate(-2deg);background:var(--red);color:#fff;font-family:var(--disp);padding:6px 16px 4px;font-size:16px;line-height:1.3;border-radius:6px;box-shadow:0 3px 0 #b8271b;margin:-10px 0 8px}
 .reveal{animation:pop .5s cubic-bezier(.2,1.4,.4,1)}
 @keyframes pop{0%{transform:scale(.6);opacity:0}100%{transform:scale(1);opacity:1}}
 .nav{margin-top:20px;display:flex;gap:10px;justify-content:center}
@@ -129,10 +135,12 @@ textarea::placeholder{color:#6f615a}
 .mvp{margin-top:24px;background:linear-gradient(160deg,#ffef7a,var(--yellow));color:var(--ink);border-radius:22px;padding:24px;text-align:center;box-shadow:0 14px 40px rgba(254,229,0,.18)}
 .mvp .tag{font-weight:700;font-size:14px;color:#6d5a4e}
 .mvp .name{font-family:var(--disp);font-size:clamp(40px,11vw,66px);line-height:1;margin-top:4px;color:var(--red);text-shadow:3px 3px 0 #fff}
+.mvp .name.long{font-size:clamp(26px,7.5vw,44px)}
 .mvp .cls{font-size:17px;margin-top:8px;font-weight:700}
 .people{margin-top:18px;display:grid;gap:12px}
 .person{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:18px}
-.person .head{display:flex;align-items:center;gap:14px}
+.person .head{display:flex;align-items:center;gap:14px;min-width:0}
+.person .head>div:last-child{min-width:0;flex:1}
 .person .face{width:54px;height:54px;border-radius:50%;background:var(--yellow);color:var(--ink);display:grid;place-items:center;font-size:28px;flex:none}
 .person .name{font-family:var(--disp);font-size:24px;line-height:1.1}
 .person .cls{color:var(--yellow);font-size:14px;font-weight:700}
@@ -153,7 +161,7 @@ canvas#fx{position:fixed;inset:0;pointer-events:none;z-index:5}
 .btn{min-height:44px}
 input,textarea{font-size:16px!important} /* iOS 자동 확대 방지 */
 .card .winner,.card .award,.marquee,.mvp .name,.person .name{overflow-wrap:anywhere}
-.card .exq,.card .exb{overflow-wrap:anywhere;word-break:normal}
+.card .exq,.card .exb,.card .quip,.card .desc,.card .stat,.person .meta{overflow-wrap:anywhere;word-break:keep-all;min-width:0}
 @media (hover:hover){.btn:hover{filter:brightness(1.05)}}
 @media (max-width:600px){
   .wrap{padding:16px 14px 48px}
@@ -172,6 +180,9 @@ input,textarea{font-size:16px!important} /* iOS 자동 확대 방지 */
   .card{padding:26px 14px 22px;min-height:0;border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.45),0 0 0 4px var(--yellow) inset}
   .card .emoji{font-size:60px}
   .card .award{font-size:clamp(30px,9vw,40px)}
+  .card .award.long{font-size:clamp(22px,6.5vw,30px)}
+  .card .winner.long{font-size:clamp(24px,7vw,34px)}
+  .ribbon{white-space:normal}
   .card .winner{font-size:clamp(34px,11vw,52px)}
   .card .stat{font-size:15px}
   .card .quip,.card .desc{font-size:14px}
@@ -284,16 +295,47 @@ PC·안드로이드·아이폰 형식 모두 됩니다."></textarea>
 const RE = {
   android: /^(\d{4})년 (\d{1,2})월 (\d{1,2})일 (오전|오후) (\d{1,2}):(\d{2}),\s*(.+?)\s*:\s*(.*)$/,
   ios:     /^(\d{4})\.\s*(\d{1,2})\.\s*(\d{1,2})\.\s*(오전|오후) (\d{1,2}):(\d{2}),\s*(.+?)\s*:\s*(.*)$/,
-  iso:     /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})(?::\d{2})?,\s*(.+?)\s*:\s*(.*)$/,
+  iso:     /^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})(?::\d{2})?,\s*([^,"]+?)\s*:\s*(.*)$/,
   pcDate:  /^-*\s*(\d{4})년 (\d{1,2})월 (\d{1,2})일 [월화수목금토일]요일\s*-*$/,
   pcMsg:   /^\[(.+?)\] \[(오전|오후) (\d{1,2}):(\d{2})\] (.*)$/,
-  csv:     /^"?(\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2})"?,"?(.+?)"?,"?(.*)"?$/,
   system:  /(님이 들어왔습니다|님이 나갔습니다|님을 초대했습니다|님이 .*님을 내보냈습니다|채팅방 관리자가|대화 상대 없음|메시지가 삭제되었습니다\.$)/,
 };
 function hour12(ap, h){ h = +h; if (ap === '오후' && h !== 12) h += 12; if (ap === '오전' && h === 12) h = 0; return h; }
 
+function parseCSV(text){
+  // RFC4180: 큰따옴표 안의 쉼표·줄바꿈·"" 처리
+  const rows = []; let row = [], field = '', inQ = false;
+  for (let i = 0; i < text.length; i++){
+    const c = text[i];
+    if (inQ){
+      if (c === '"'){ if (text[i+1] === '"'){ field += '"'; i++; } else inQ = false; }
+      else field += c;
+    } else if (c === '"') inQ = true;
+    else if (c === ','){ row.push(field); field = ''; }
+    else if (c === '\n'){ row.push(field); rows.push(row); row = []; field = ''; }
+    else field += c;
+  }
+  if (field !== '' || row.length){ row.push(field); rows.push(row); }
+  return rows;
+}
+function looksLikeCSV(text){
+  const head = text.slice(0, 4000);
+  return /^\uFEFF?Date,User,Message/i.test(head) || (head.match(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2},"/gm)||[]).length >= 3;
+}
 function parse(text){
-  const lines = text.replace(/\r/g,'').split('\n');
+  text = text.replace(/^\uFEFF/, '').replace(/\r/g,'');
+  if (looksLikeCSV(text)){
+    const msgs = [];
+    for (const r of parseCSV(text)){
+      if (r.length < 3) continue;
+      const [d, name, ...rest] = r; const txt = rest.join(',');
+      const dm = d.match(/^(\d{4})-(\d{2})-(\d{2}) (\d{2}):(\d{2})(?::(\d{2}))?$/);
+      if (!dm || !name.trim() || RE.system.test(txt)) continue;
+      msgs.push({ t:new Date(+dm[1], dm[2]-1, +dm[3], +dm[4], +dm[5], +(dm[6]||0)), name:name.trim(), text:txt });
+    }
+    return { msgs, room:'' };
+  }
+  const lines = text.split('\n');
   const msgs = []; let cur = null, pcDay = null, room = '';
   for (let i = 0; i < lines.length; i++){
     const line = lines[i];
@@ -307,8 +349,6 @@ function parse(text){
       pcDay = [+m[1], m[2]-1, +m[3]]; cur = null;
     } else if (pcDay && (m = line.match(RE.pcMsg))){
       push(new Date(pcDay[0], pcDay[1], pcDay[2], hour12(m[2], m[3]), +m[4]), m[1], m[5]);
-    } else if ((m = line.match(RE.csv)) && m[2] !== 'User'){
-      const d = m[1].replace(' ','T'); push(new Date(d), m[2], m[3]);
     } else if (cur && line.trim() !== '' && !/^\d{4}년 \d{1,2}월 \d{1,2}일/.test(line)){
       cur.text += '\n' + line; // 여러 줄 메시지
     }
@@ -328,16 +368,22 @@ function parse(text){
 const EMOJI = /\p{Extended_Pictographic}/gu;
 function analyze(msgs){
   const P = {};
-  const get = n => P[n] || (P[n] = { name:n, count:0, chars:0, longest:0, longestText:'', kk:0, cry:0, emoji:0, photo:0, emoticon:0, q:0, bang:0, link:0, hours:new Array(24).fill(0), weekend:0, starts:0, replies:[], maxStreak:0, deleted:0, short:0, heart:0, sorry:0, food:0, money:0, lol:0, laughsGot:0, hits:0, empathy:0, slang:0, log:[], days:new Set() });
-  let prev = null, streak = 0, streakName = null;
+  const get = n => P[n] || (P[n] = { name:n, count:0, chars:0, longest:0, longestText:'', kk:0, cry:0, emoji:0, photo:0, emoticon:0, q:0, bang:0, link:0, hours:new Array(24).fill(0), weekend:0, starts:0, replies:[], maxStreak:0, deleted:0, short:0, heart:0, sorry:0, food:0, money:0, lol:0, laughsGot:0, hits:0, advice:0, adviceN:0, slang:0, log:[], days:new Set() });
+  let prev = null, lastSub = null, streak = 0, streakName = null;
   msgs.forEach((m, i) => {
     const p = get(m.name), txt = m.text, h = m.t.getHours(), d = m.t.getDay();
     p.count++; p.days.add(m.t.toDateString());
     const rec = { text:txt, h, mi:m.t.getMinutes(), got:0, q:null, re:null }; p.log.push(rec); m.rec = rec;
-    if (prev && prev.name !== m.name && (m.t - prev.t) / 60000 <= 30) rec.q = { n:prev.name, t:prev.text };
-    rec.emp = (txt.match(/힘내|괜찮아|괜찮|고생했|고생 많|수고했|수고 많|토닥|안아|응원|축하|보고싶|사랑해|고마워|감사|대단|멋있|멋져|잘했|잘될|화이팅|파이팅|ㅠㅠ|ㅜㅜ|🥹|🥺|❤|💕|🫶|😢|😭|진짜 속상|속상|마음 아프|어떡해|헐 괜찮/g)||[]).length;
+    // 반응의 대상은 '다른 사람'이 마지막으로 한 '내용 있는' 말 (내 말, ㅋㅋ만 있는 말, 사진 등은 건너뜀)
+    const target = lastSub && lastSub.name !== m.name && (m.t - lastSub.t) / 60000 <= 30 ? lastSub : null;
+    if (target) rec.q = { n:target.name, t:target.text };
+    // 조언: 다른 사람 말에 답하면서 "~해봐 / ~하는 게 좋아 / ~하지 마 / 내 생각엔" 류의 표현을 쓴 경우
+    rec.adv = 0;
+    if (rec.q && txt.length >= 8){
+      rec.adv = (txt.match(/해 ?봐|해보|해 ?보는 게|보는 건 어때|어떠냐|어때\?|하는 게 좋|하는게 좋|하는 게 나|하는게 나|하지 ?마|하지마|하면 돼|하면 됨|해야 ?돼|해야 ?함|해야지|하는 걸 추천|추천|내 생각엔|내 생각에는|제 생각엔|솔직히|그럴 땐|그럴 때는|그냥 .*해|먼저 .*해|차라리|일단|우선|그러지 말고|그렇게 하지|병원|약 먹|쉬어|자라|자자|푹 자|물 마셔|걱정 ?마|신경 쓰지|무시해|말해 ?봐|물어 ?봐|확인해|찾아봐|검색해|정리해|기록해|연락해|거절해|참지 ?마|기다려|포기하지|조금만|천천히|괜찮아질|해결|방법은|팁|꿀팁/g)||[]).length;
+    }
     rec.sl = (txt.match(/ㄹㅇ|ㅇㅈ|개꿀|개웃|개좋|개맛|존맛|존잼|쩐다|쩔|미쳤|레전드|킹받|지리|지린|갓생|찐|극혐|노잼|꿀잼|핵|에바|어쩔|저쩔|인정|띵|손절|각이|ㅋㅋ루|ㅅㄱ|ㅈㄱㄴ|ㅈㅈ|개빡|빡침|ㅠㅠㅠㅠ|ㅋㅋㅋㅋㅋㅋㅋㅋ|🤣|💀|🫠|ㅗ|ㅅㅂ|ㅈㄴ|응애|ㅌㅌ|ㅈㅅ|머임|모임|엥|헐|대박|오지|알빠|억까|ㄷㄷ|ㅁㅊ|ㅇㅂ|ㅊㅋ/g)||[]).length;
-    p.empathy += rec.emp; p.slang += rec.sl;
+    p.advice += rec.adv; if (rec.adv) p.adviceN++; p.slang += rec.sl;
     p.hours[h]++; if (d === 0 || d === 6) p.weekend++;
     const isPhoto = /^(사진|사진 \d+장|동영상)$/.test(txt.trim());
     const isEmot = /^이모티콘$/.test(txt.trim());
@@ -361,10 +407,18 @@ function analyze(msgs){
     p.food += (txt.match(/배고|밥|맛있|먹자|치킨|피자|떡볶이|커피|술|맥주|소주|야식|배달/g)||[]).length;
     p.money += (txt.match(/돈|원|계좌|송금|더치|n빵|엔빵|정산/g)||[]).length;
     if (/^(ㅇㅇ|ㅇㅋ|ㅇㅋㅇㅋ|넵|넹|ㄴㄴ|ㅇ|ㄱㄱ|ㅇㅈ|ㅎㅇ|ㅂㅂ)$/.test(txt.trim())) p.lol++;
-    if (prev && prev.name !== m.name && (m.t - prev.t) / 60000 <= 10){
+    if (target && (m.t - target.t) / 60000 <= 10){
       const laugh = (txt.match(/ㅋ|ㅎ/g)||[]).length;
-      if (laugh >= 2){ const g = get(prev.name); g.laughsGot += laugh; g.hits++; if (prev.rec){ prev.rec.got += laugh; if (!prev.rec.re || laugh > prev.rec.re.k) prev.rec.re = { n:m.name, t:txt, k:laugh }; } }
+      const tr = target.rec;
+      if (laugh >= 2 && tr && !(tr.by ||= new Set()).has(m.name)){  // 같은 사람이 같은 말에 두 번 웃어도 한 번만
+        tr.by.add(m.name);
+        const g = get(target.name); g.laughsGot += laugh; g.hits++;
+        tr.got += laugh; if (!tr.re || laugh > tr.re.k) tr.re = { n:m.name, t:txt, k:laugh };
+      }
     }
+    // 이 메시지가 '내용 있는 말'이면 다음 반응의 대상 후보가 됨 (ㅋ·ㅎ가 절반 넘으면 그냥 웃음, 사진·이모티콘은 제외)
+    { const body = txt.replace(/\s/g,''); const kkn = (body.match(/ㅋ|ㅎ|ㅠ|ㅜ|!|~|\.|\?/g)||[]).length;
+      if (!isPhoto && !isEmot && !isDel && body.length >= 2 && kkn < body.length / 2) lastSub = m; }
     if (prev){
       const gap = (m.t - prev.t) / 60000;
       if (gap > 360) p.starts++;
@@ -389,7 +443,7 @@ function analyze(msgs){
    3) 상 목록
    ========================================================= */
 const fmtN = n => Number(n).toLocaleString('ko-KR');
-const isText = r => !/^(사진|사진 \d+장|동영상|이모티콘|삭제된 메시지입니다\.?)$/.test(r.text.trim());
+const isText = r => !/^(사진|사진 \d+장|동영상|이모티콘|파일|음성메시지|삭제된 메시지입니다\.?)$/.test(r.text.trim()) && !/^(샵검색|카나나 검색|톡게시판|지도|송금|https?:\/\/)/.test(r.text.trim());
 const clip = (str, n=70) => { str = str.replace(/\s+/g,' ').trim(); return str.length > n ? str.slice(0,n) + '…' : str; };
 const uniq = arr => { const seen=new Set(); return arr.filter(r=>{ const k=r.text.trim(); if (seen.has(k)) return false; seen.add(k); return true; }); };
 const pick = (arr, n) => { // 고르게 흩어진 n개
@@ -416,44 +470,59 @@ const AWARDS = [
   { id:'kk', emoji:'🤣', name:'너그러운 관객 깔깔이', desc:'뭐라고 하든 ㅋㅋㅋㅋ로 받아주는 사람', key:p=>p.kk, unit:p=>`ㅋ·ㅎ ${fmtN(p.kk)}개`,
     quip:'안 웃긴 것도 ㅋㅋㅋㅋ, 월요일도 ㅋㅋㅋㅋ. 개그맨들의 유일한 희망.',
     ex:p=>uniq([...p.log].filter(r=>isText(r)&&kk(r.text)>=3).sort((x,y)=>(y.q?1:0)-(x.q?1:0)||kk(y.text)-kk(x.text))).slice(0,3).map((r,i)=>({ c:r.q?['이게 웃긴가? 이 사람한텐 웃김','웃음 포인트 미상','그냥 다 웃김'][i]:['그냥 혼자 웃음','근거 없는 ㅋ','ㅋ 자가 생산'][i], q:r.q?clip(r.q.t,50):undefined, qn:r.q?r.q.n:undefined, a:clip(r.text,50) })) },
-  { id:'emp', emoji:'🫶', name:'F감성 공감러', desc:'힘내, 괜찮아, ㅠㅠ로 이 방의 멘탈을 책임지는 사람', key:p=>p.empathy, unit:p=>`공감·위로 표현 ${fmtN(p.empathy)}회`,
-    quip:'MBTI 검사 안 해도 됨. 카톡이 이미 F라고 말하고 있음.',
-    ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.emp>0).sort((x,y)=>(y.q?1:0)-(x.q?1:0)||y.emp-x.emp)).slice(0,3).map((r,i)=>({ c:r.q?['누가 힘들다고 하면 0.5초 만에','T들은 해결책 말할 때','공감 능력 만렙'][i]:['이유는 없고 그냥','감성 가득','진심이 느껴짐'][i], q:r.q?clip(r.q.t,50):undefined, qn:r.q?r.q.n:undefined, a:clip(r.text,60) })) },
+  { id:'doc', emoji:'🩺', name:'당신의 마음을 치료해준 오은영 상', desc:'남의 고민에 "그럴 땐 이렇게 해봐"로 답한 사람', key:p=>p.advice + p.adviceN, unit:p=>`조언 ${fmtN(p.adviceN)}번 (처방 표현 ${fmtN(p.advice)}회)`,
+    quip:'상담비는 안 받음. 대신 안 물어본 것까지 처방해 줌.',
+    ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.adv>0&&r.q).sort((x,y)=>y.adv-x.adv||y.text.length-x.text.length)).slice(0,3).map((r,i)=>({ c:['내담자 입장','전문의 소견','진료 끝, 다음 환자'][i], q:clip(r.q.t,60), qn:r.q.n, a:clip(r.text,90) })) },
   { id:'kid', emoji:'🧒', name:'이구역 잼민이', desc:'ㄹㅇ ㅇㅈ 킹받네 — 신조어 사용량 1위', key:p=>p.slang, unit:p=>`신조어·급식체 ${fmtN(p.slang)}회`,
     quip:'주민등록상 나이와 카톡상 나이의 차이가 가장 큰 사람.',
     ex:p=>uniq([...p.log].filter(r=>isText(r)&&r.sl>0).sort((x,y)=>y.sl-x.sl)).slice(0,3).map((r,i)=>({ c:['한 문장에 신조어 '+r.sl+'개','번역기 필요','부모님께 보여드릴 수 없음'][i], a:clip(r.text,60) })) },
+  { id:'quiet', emoji:'🤫', name:'조용했던 우리 아이', desc:'분명 방에 있는데, 말은 거의 없는 사람', key:p=>-p.count, unit:p=>`메시지 겨우 ${fmtN(p.count)}개`, needAll:true,
+    quip:'"1"은 항상 사라지는데 말은 없음. 다 보고 있음. 가장 무서운 유형.',
+    ex:p=>pick(p.log.filter(r=>isText(r)&&r.text.trim().length>=2), 3).map((r,i)=>({ c:['역사적 발언 1호','오랜 침묵 끝에','이 말 하고 다시 잠수'][i]+` (${when(r)})`, a:clip(r.text,60) })) },
 ];
-const CLASSES = { talk:'중계진', short:'미니멀리스트', comic:'개그맨', night:'야행성', kk:'관객', emp:'감성파', kid:'잼민이' };
+const CLASSES = { talk:'중계진', short:'미니멀리스트', comic:'개그맨', night:'야행성', kk:'관객', doc:'상담 선생님', kid:'잼민이', quiet:'관찰자' };
 
-function judge(P, limit){
+function judge(P){
   const people = Object.values(P);
+  const FIXED = new Set(['talk','quiet']);   // 수다쟁이·조용한 아이는 진짜 1등/꼴찌에게
   const cands = [];
   for (const a of AWARDS){
     const pool = people.filter(p => !a.min || a.min(p));
     if (pool.length < 2) continue;
-    const ranked = pool.map(p => ({ p, v:a.key(p) })).sort((x,y)=>y.v-x.v);
+    const ranked = pool.map(p => ({ p, v:a.key(p) })).filter(x => a.needAll || x.v > 0).sort((x,y)=>y.v-x.v);
+    if (!ranked.length) continue;
+    if (a.needAll && ranked.every(x=>x.v===ranked[0].v)) continue;
     const top = ranked[0], second = ranked[1];
-    if (!a.needAll && top.v <= 0) continue;
-    if (a.needAll && -top.v === Math.max(...people.map(p=>p.count))) continue;
-    // 얼마나 "압도적"인가: 1등과 2등 차이가 클수록 재밌는 상
-    let spice = a.needAll ? 0.5 : (second && second.v > 0 ? (top.v - second.v) / top.v : 1);
-    if (!a.needAll && top.v < 3) spice *= 0.3;           // 표본이 너무 적으면 재미 없음
-    if (a.id === 'talk') spice = 9;                        // 수다왕은 항상 시상
-    cands.push({ award:a, winner:top.p, spice, runners:ranked.slice(1,3).filter(r=>r.v>0||a.needAll).map(r=>r.p) });
+    const spice = a.needAll ? 0.5 : (second ? (top.v - second.v) / top.v : 1);
+    cands.push({ award:a, ranked, spice });
   }
-  if (!limit || cands.length <= limit) return cands;
-  // 한 사람이 독식하지 않게: 압도적인 상부터, 1인당 2개까지 먼저 채우고 남으면 나머지로
-  const sorted = [...cands].sort((x,y)=>y.spice-x.spice);
-  const per = {}, picked = [];
-  for (const c of sorted){ if (picked.length >= limit) break; if ((per[c.winner.name]||0) >= 2) continue; picked.push(c); per[c.winner.name]=(per[c.winner.name]||0)+1; }
-  for (const c of sorted){ if (picked.length >= limit) break; if (!picked.includes(c)) picked.push(c); }
-  // 수상자가 한 명도 없는 사람이 있으면, 그 사람이 받을 수 있는 상 하나로 바꿔치기
+  // 골고루: 1인당 상한 = ceil(상 수 / 사람 수). 압도적인 상부터 확정하고,
+  // 상한에 걸린 사람 대신 그 상에서 다음으로 높은 사람에게 넘김.
+  const cap = Math.max(1, Math.ceil(cands.length / people.length));
+  const won = new Map(people.map(p=>[p, 0]));
+  const result = new Map();
+  const order = [...cands].sort((x,y)=>(FIXED.has(y.award.id)-FIXED.has(x.award.id)) || (y.spice-x.spice));
+  for (const c of order){
+    let pick = null;
+    if (FIXED.has(c.award.id)) pick = c.ranked[0];
+    else {
+      // 상한 미만인 사람 중 가장 높은 사람. 그래도 없으면 1등
+      pick = c.ranked.find(x=>won.get(x.p)<cap) || c.ranked[0];
+    }
+    won.set(pick.p, won.get(pick.p)+1);
+    const runners = c.ranked.filter(x=>x.p!==pick.p).slice(0,2).map(x=>x.p);
+    result.set(c.award, { award:c.award, winner:pick.p, runners, ceded: pick !== c.ranked[0] ? c.ranked[0].p.name : null });
+  }
   for (const p of people){
-    if (picked.some(c=>c.winner===p)) continue;
-    const alt = sorted.find(c=>c.winner===p && !picked.includes(c));
-    if (alt){ const i = picked.map(c=>c.award.id==='talk'?-1:c.spice).lastIndexOf(Math.min(...picked.filter(c=>c.award.id!=='talk').map(c=>c.spice))); if (i>=0) picked[i] = alt; }
+    if (won.get(p) > 0) continue;
+    const donor = [...result.values()].filter(r=>!FIXED.has(r.award.id) && won.get(r.winner) >= 2)
+      .map(r=>({ r, c: cands.find(c=>c.award===r.award) })).map(x=>({ ...x, rank: x.c.ranked.findIndex(y=>y.p===p) }))
+      .filter(x=>x.rank>=0).sort((x,y)=>x.rank-y.rank)[0];
+    if (!donor) continue;
+    won.set(donor.r.winner, won.get(donor.r.winner)-1); won.set(p, 1);
+    result.set(donor.r.award, { award:donor.r.award, winner:p, runners:donor.c.ranked.filter(x=>x.p!==p).slice(0,2).map(x=>x.p), ceded: donor.c.ranked[0].p.name });
   }
-  return AWARDS.map(a=>picked.find(c=>c.award===a)).filter(Boolean); // 원래 순서로
+  return AWARDS.map(a=>result.get(a)).filter(Boolean); // 봉투 순서는 원래대로
 }
 
 /* =========================================================
@@ -491,8 +560,9 @@ const ART = {
   kk: ()=>potato({face:F.dead, tilt:-12, prop:[...Array(14)].map((_,i)=>t(20+(i*37)%220, 20+(i*53)%160,'ㅋ',14+(i*7)%18,'#b36b00',(i*41)%60-30)).join('')}),
   night: ()=>potato({face:F.sleepy, body:'#c9b9ff', bg:`<rect width="240" height="180" fill="#1b1540"/><circle cx="200" cy="34" r="20" fill="#fee500"/><circle cx="190" cy="28" r="18" fill="#1b1540"/>`+[...Array(12)].map((_,i)=>`<circle cx="${(i*67)%240}" cy="${(i*41)%80}" r="1.8" fill="#fff"/>`).join(''), prop:t(50,160,'03:17',22,'#fff')+bubble(180,130,'자?',40)}),
   comic: ()=>potato({face:F.smug, body:'#ffd98a', prop:`<rect x="24" y="40" width="10" height="70" rx="4" fill="#333"/><ellipse cx="29" cy="36" rx="12" ry="14" fill="#555" stroke="${INK}" stroke-width="3"/>`+bubble(190,30,'ㅋㅋㅋㅋ',70)+bubble(200,70,'ㅋㅋㅋㅋㅋ',80)+bubble(190,110,'ㅋㅋ',44)+bubble(195,150,'미친ㅋㅋ',66)+t(50,165,'(진지했음)',11)}),
-  emp: ()=>potato({face:F.cry, body:'#ffd1dc', prop:[...Array(6)].map((_,i)=>`<path transform="translate(${20+(i*73)%200} ${20+(i*53)%120}) scale(.7)" d="M0 10 c-10 -12 6 -22 8 -10 c2 -12 18 -2 8 10 l-8 8z" fill="#ff4d3d"/>`).join('')+bubble(190,40,'괜찮아ㅠㅠ',76)+bubble(50,150,'힘내🥺',60)+t(195,160,'(F 100%)',11)}),
+  doc: ()=>potato({face:F.think, body:'#d8f5e3', prop:`<circle cx="104" cy="92" r="13" fill="none" stroke="${INK}" stroke-width="3"/><circle cx="138" cy="92" r="13" fill="none" stroke="${INK}" stroke-width="3"/><path d="M117 92 h8" stroke="${INK}" stroke-width="3"/><rect x="18" y="110" width="60" height="50" rx="6" fill="#fff" stroke="${INK}" stroke-width="3"/>`+t(48,130,'처방전',12)+t(48,150,'일단 자라',11)+bubble(190,36,'그럴 땐',56)+bubble(196,68,'이렇게 해봐',84)+bubble(60,40,'힘들어ㅠ',60)}),
   kid: ()=>potato({face:F.smug, body:'#b8f0ff', tilt:-8, prop:`<path d="M80 40 q40 -40 80 0" fill="#ff4d3d" stroke="${INK}" stroke-width="3"/><path d="M160 40 l40 -6 l-4 10z" fill="#ff4d3d" stroke="${INK}" stroke-width="3"/>`+bubble(40,80,'ㄹㅇ',40)+bubble(200,100,'ㅇㅈ',40)+bubble(50,150,'킹받네',56)+bubble(195,150,'개꿀ㅋ',56)+t(120,20,'급식체 능력자',12)}),
+  quiet: ()=>potato({face:F.blank, body:'#d8d8d8', bg:`<rect width="240" height="180" fill="#2a2f3a"/>`+[...Array(5)].map((_,i)=>bubble(40+(i*47)%170, 24+(i*31)%60, 'ㅋㅋ', 40)).join(''), prop:`<path d="M112 118 q8 6 16 0" stroke="${INK}" stroke-width="4" fill="none" stroke-linecap="round"/><rect x="118" y="96" width="8" height="30" rx="4" fill="#ffd98a" stroke="${INK}" stroke-width="3"/>`+t(120,160,'(읽음)',14,'#fff')+t(200,160,'1 ✓',12,'#aaa')}),
   mvp: ()=>potato({face:F.smug, body:'#fee500', prop:`<path d="M80 50 l12 -34 l16 20 l12 -28 l12 28 l16 -20 l12 34z" fill="#ffb700" stroke="${INK}" stroke-width="3" stroke-linejoin="round"/>`+[...Array(8)].map((_,i)=>t(20+(i*63)%210, 30+(i*51)%150,'★',16,'#ff4d3d')).join('')}),
   load: ()=>potato({face:F.spiral, tilt:-6, prop:`<rect x="150" y="60" width="70" height="90" fill="#fff8dc" stroke="${INK}" stroke-width="3"/>`+[...Array(5)].map((_,i)=>`<path d="M160 ${80+i*14} h${30+(i*11)%20}" stroke="${INK}" stroke-width="2"/>`).join('')+`<circle cx="60" cy="60" r="22" fill="none" stroke="${INK}" stroke-width="4"/><path d="M75 75 l25 25" stroke="${INK}" stroke-width="6" stroke-linecap="round"/>`+bubble(60,130,'흠...',44)}),
 };
@@ -554,7 +624,7 @@ function buildShow(DATA){
   return {
     room: DATA.room || '', period: `${fmt(first)} ~ ${fmt(last)}`, total,
     people: people.map(p=>({ name:p.name, count:p.count, pct:Math.round(p.count/total*100), peak:p.peakHour, days:p.activeDays })),
-    awards: judged.map(r=>({ id:r.award.id, w:r.winner.name, s:r.award.unit(r.winner), e:(r.award.ex ? r.award.ex(r.winner) : []).slice(0,6), r:r.runners.map(p=>({ n:p.name, s:r.award.unit(p) })) })),
+    awards: judged.map(r=>({ id:r.award.id, w:r.winner.name, s:r.award.unit(r.winner), e:(r.award.ex ? r.award.ex(r.winner) : []).slice(0,6), r:r.runners.slice(0,1).map(p=>({ n:p.name })) })),
     sum: { avg: Math.round(total/days*10)/10, peak: hours.indexOf(Math.max(...hours)), kk: people.reduce((s,p)=>s+p.kk,0), busy: busiest[1], busyDate: fmtShort(new Date(busiest[0])) },
   };
 }
@@ -565,20 +635,20 @@ function renderAward(){
   $('#counter').textContent = `${idx+1} / ${SHOW.awards.length}`;
   $('#bar').style.width = (idx / SHOW.awards.length * 100) + '%';
   const card = $('#card'); card.className = 'card closed';
-  card.innerHTML = `<div class="emoji">${a.emoji}</div><div class="award">${a.name}</div><div class="desc">${a.desc}</div><div class="tap">봉투 열기 ✉️</div>`;
+  card.innerHTML = `<div class="emoji">${a.emoji}</div><div class="award ${a.name.length>9?'long':''}">${a.name}</div><div class="desc">${a.desc}</div><div class="tap">봉투 열기 ✉️</div>`;
   $('#next').style.display = 'none';
   const open = () => {
     if (!card.classList.contains('closed')) return;
     card.classList.remove('closed');
-    const run = r.r.map(x=>`<span><span>${esc(x.n)}</span><span>${esc(x.s)}</span></span>`).join('');
+    const run = r.r.length ? `<span><span>🥈 아깝게 2등</span><span>${esc(r.r[0].n)}</span></span>` : '';
     card.innerHTML = `<div class="ribbon">${a.emoji} ${a.name}</div>
       ${(ART[a.id]||ART.mvp)()}
       <div class="nominee">수상자는…</div>
-      <div class="winner reveal">${esc(r.w)}</div>
+      <div class="winner reveal ${r.w.length>8?'long':''}">${esc(r.w)}</div>
       <div class="stat">${esc(r.s)}</div>
       <div class="quip">${a.quip}</div>
       ${r.e && r.e.length ? `<div class="ex"><div class="exh">📁 증거 자료</div>${r.e.map(x=>`<div class="exi"><div class="exc">${esc(x.c)}</div>${x.q ? `<div class="exq"><small>${esc(x.qn||'')}</small>${esc(x.q)}</div>` : ''}<div class="exb">${esc(x.a)}</div>${x.re ? `<div class="exq re"><small>${esc(x.rn||'')}</small>${esc(x.re)}</div>` : ''}</div>`).join('')}</div>` : ''}
-      ${run ? `<div class="runners"><span><span>아깝게 놓친 분들</span><span></span></span>${run}</div>` : ''}`;
+      ${run ? `<div class="runners">${run}</div>` : ''}`;
     confetti();
     $('#bar').style.width = ((idx+1) / SHOW.awards.length * 100) + '%';
     $('#next').style.display = '';
@@ -613,7 +683,7 @@ function renderHall(push=true){
   const wins = {}; SHOW.awards.forEach(r => (wins[r.w] ||= []).push(AWARD_BY_ID[r.id]));
   const mvp = [...people].sort((a,b)=>((wins[b.name]||[]).length - (wins[a.name]||[]).length) || (b.count-a.count))[0];
   const cls = p => { const w = wins[p.name]||[]; return w.length ? CLASSES[w[0].id] : '균형의 수호자'; };
-  $('#mvp').innerHTML = `${ART.mvp()}<div class="tag">🏆 올해의 카톡 MVP</div><div class="name">${esc(mvp.name)}</div><div class="cls">${(wins[mvp.name]||[]).length}관왕 · ${cls(mvp)}</div>`;
+  $('#mvp').innerHTML = `${ART.mvp()}<div class="tag">🏆 올해의 카톡 MVP</div><div class="name ${mvp.name.length>8?'long':''}">${esc(mvp.name)}</div><div class="cls">${(wins[mvp.name]||[]).length}관왕 · ${cls(mvp)}</div>`;
   $('#people').innerHTML = people.map((p,i)=>{
     const w = wins[p.name]||[];
     return `<div class="person"><div class="head"><div class="face">${FACES[i%FACES.length]}</div><div>
@@ -630,32 +700,54 @@ function renderHall(push=true){
 }
 
 /* ---------- 공유 링크: 결과만 압축해서 주소 뒤에 붙임 (대화 원문은 포함되지 않음) ---------- */
+// 배포한 뒤 공개 주소를 여기에 적으면(예: 'https://katalk-awards.vercel.app/') 어디서 열든 그 주소로 링크가 만들어져요.
+const PUBLIC_URL = '';
 const b64u = {
-  enc: bytes => btoa(String.fromCharCode(...bytes)).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''),
-  dec: s => Uint8Array.from(atob(s.replace(/-/g,'+').replace(/_/g,'/').padEnd(Math.ceil(s.length/4)*4,'=')), c=>c.charCodeAt(0)),
+  enc: bytes => { let bin=''; for (const c of bytes) bin += String.fromCharCode(c); return btoa(bin).replace(/\+/g,'-').replace(/\//g,'_').replace(/=+$/,''); },
+  dec: str => { str = str.replace(/-/g,'+').replace(/_/g,'/'); str += '='.repeat((4 - str.length % 4) % 4); return Uint8Array.from(atob(str), c=>c.charCodeAt(0)); },
 };
-async function pipe(bytes, Stream){
-  const st = new Stream('deflate-raw');
-  const w = st.writable.getWriter(); w.write(bytes); w.close();
-  return new Uint8Array(await new Response(st.readable).arrayBuffer());
+async function pipe(bytes, Stream, fmt='deflate-raw'){
+  const st = new Stream(fmt);
+  const w = st.writable.getWriter();
+  const done = (async()=>{ await w.write(bytes); await w.close(); })().catch(()=>{});
+  const out = new Uint8Array(await new Response(st.readable).arrayBuffer());
+  await done; if (!out.length) throw new Error('shape'); return out;
 }
 async function encodeShow(show){
   const raw = new TextEncoder().encode(JSON.stringify(show));
-  if ('CompressionStream' in window) return 'z' + b64u.enc(await pipe(raw, CompressionStream));
+  if ('CompressionStream' in window && 'DecompressionStream' in window){
+    try {
+      const z = 'z' + b64u.enc(await pipe(raw, CompressionStream));
+      await decodeShow(z);                       // 이 브라우저에서 되돌릴 수 있는지 확인
+      return z;
+    } catch (e) { console.warn('압축 공유 실패, 비압축으로 전환', e); }
+  }
   return 'j' + b64u.enc(raw);
 }
-async function decodeShow(code){
-  code = code.trim().replace(/^.*#r=/, '').replace(/&.*$/, '');
-  const body = code.slice(1);
-  const bytes = code[0] === 'z' ? await pipe(b64u.dec(body), DecompressionStream) : b64u.dec(body);
-  const obj = JSON.parse(new TextDecoder().decode(bytes));
-  if (!obj || !Array.isArray(obj.people) || !Array.isArray(obj.awards)) throw new Error('bad');
+async function decodeShow(input){
+  let code = String(input).trim();
+  try { code = decodeURIComponent(code); } catch {}
+  const m = code.match(/#?r=([A-Za-z0-9_-]+)/);  // 링크 전체든, 코드만이든
+  code = m ? m[1] : code.replace(/[^A-Za-z0-9_-]/g,'');
+  if (!code) throw new Error('empty');
+  const kind = code[0], bytes = b64u.dec(code.slice(1));
+  let json;
+  if (kind === 'z'){
+    if (!('DecompressionStream' in window)) throw new Error('unsupported');
+    try { json = await pipe(bytes, DecompressionStream, 'deflate-raw'); }
+    catch { json = await pipe(bytes, DecompressionStream, 'deflate'); }
+  } else if (kind === 'j') json = bytes;
+  else throw new Error('kind');
+  const obj = JSON.parse(new TextDecoder().decode(json));
+  if (!obj || !Array.isArray(obj.people) || !Array.isArray(obj.awards)) throw new Error('shape');
   obj.awards = obj.awards.filter(a=>AWARD_BY_ID[a.id]);
+  if (!obj.awards.length) throw new Error('noawards');
   return obj;
 }
 async function makeShareLink(startAt){
   const code = await encodeShow(SHOW);
-  return { link: location.href.split('#')[0] + '#r=' + code + (startAt ? '&a=' + startAt : ''), code };
+  const base = PUBLIC_URL || location.href.split('#')[0];
+  return { link: base + '#r=' + code + (startAt ? '&a=' + startAt : ''), code };
 }
 async function shareLink(startAt, okMsg){
   try {
@@ -682,8 +774,10 @@ async function openShared(code){
     const m = String(code).match(/&a=(\d+)/); idx = m ? Math.min(+m[1], SHOW.awards.length-1) : 0;
     history.replaceState({screen:'#s-intro'}, '', location.pathname + location.search + location.hash);
     show('#s-award'); renderAward();
-  } catch {
-    err.textContent = '공유 코드를 읽지 못했어요. 링크 전체 또는 #r= 뒤의 코드를 그대로 붙여넣어 주세요.'; err.classList.add('on');
+  } catch (e) {
+    console.error('share decode failed', e);
+    const why = { empty:'코드가 비어 있어요', unsupported:'이 브라우저가 압축 해제를 지원하지 않아요. 크롬·사파리 최신 버전으로 열어주세요', kind:'코드 형식이 달라요', shape:'코드 내용이 깨졌어요', noawards:'상 정보가 없어요' }[e.message] || `링크가 잘렸거나 변형된 것 같아요 (${e.name||'오류'})`;
+    err.textContent = `공유 링크를 읽지 못했어요 — ${why}. 링크 전체를 그대로 붙여넣어 보시고, 안 되면 보낸 사람에게 다시 받아주세요.`; err.classList.add('on');
   }
 }
 function toast(t){ const el=$('#toast'); el.textContent=t; el.classList.add('on'); setTimeout(()=>el.classList.remove('on'),1800); }
